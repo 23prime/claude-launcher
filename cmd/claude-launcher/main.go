@@ -17,6 +17,13 @@ const (
 	exitError   = 1
 )
 
+var (
+	// Version information - set by ldflags during build
+	Version   = "dev"
+	GitCommit = "unknown"
+	BuildDate = "unknown"
+)
+
 func main() {
 	os.Exit(run())
 }
@@ -25,8 +32,13 @@ func run() int {
 	// Parse command-line flags
 	showDirs := flag.Bool("show-dirs", false, "Show configured allowed directories")
 	flag.BoolVar(showDirs, "l", false, "Show configured allowed directories (shorthand)")
+
 	showHelp := flag.Bool("help", false, "Show help message")
 	flag.BoolVar(showHelp, "h", false, "Show help message (shorthand)")
+
+	showVersion := flag.Bool("version", false, "Show version information")
+	flag.BoolVar(showVersion, "v", false, "Show version information (shorthand)")
+
 	flag.Parse()
 
 	printer := ui.NewPrinter(os.Stderr)
@@ -34,6 +46,11 @@ func run() int {
 	// Show help if requested
 	if *showHelp {
 		showHelpMessage()
+		return exitSuccess
+	}
+
+	if *showVersion {
+		showVersionInformation()
 		return exitSuccess
 	}
 
@@ -110,6 +127,7 @@ USAGE:
 OPTIONS:
     -h, --help        Show this help message
     -l, --show-dirs   Show configured allowed directories
+	-v, --version     Show version information
 
 DESCRIPTION:
     Combines directory security and session management for Claude Code.
@@ -146,4 +164,10 @@ EXAMPLES:
     claude-launcher --show-dirs
 `
 	fmt.Print(help)
+}
+
+func showVersionInformation() {
+	fmt.Printf("claude-launcher %s\n", Version)
+	fmt.Printf("  commit: %s\n", GitCommit)
+	fmt.Printf("  built:  %s\n", BuildDate)
 }

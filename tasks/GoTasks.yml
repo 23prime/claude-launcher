@@ -4,7 +4,14 @@ tasks:
   build:
     desc: Build the application
     cmds:
-      - go build -o bin/claude-launcher ./cmd/claude-launcher
+      - |
+        VERSION="dev-version"
+        COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+        BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+        go build \
+          -ldflags="-X main.Version=${VERSION} -X main.GitCommit=${COMMIT} -X main.BuildDate=${BUILD_DATE}" \
+          -o bin/claude-launcher \
+          ./cmd/claude-launcher
     sources:
       - "**/*.go"
       - go.mod
@@ -46,7 +53,7 @@ tasks:
     deps:
       - build
     cmds:
-      - ./bin/claude-launcher
+      - ./bin/claude-launcher {{.CLI_ARGS}}
 
   fmt:
     desc: Format Go code

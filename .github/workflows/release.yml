@@ -66,9 +66,14 @@ jobs:
             output_name="${output_name}.exe"
           fi
 
+          # Extract version information
+          VERSION="${GITHUB_REF#refs/tags/}"
+          COMMIT="${GITHUB_SHA}"
+          BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
           go build \
             -trimpath \
-            -ldflags="-s -w" \
+            -ldflags="-s -w -X main.Version=${VERSION} -X main.GitCommit=${COMMIT} -X main.BuildDate=${BUILD_DATE}" \
             -o "${output_name}" \
             ./cmd/claude-launcher
 
