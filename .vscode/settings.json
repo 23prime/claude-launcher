@@ -30,5 +30,18 @@
   },
 
   // Dictionary for spell checker
-  "cSpell.words": ["shellcheck", "Taskfile"]
+  "cSpell.words": ["shellcheck", "Taskfile"],
+
+  // Go
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "golang.Go"
+  },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--path-mode=abs", "--fast-only"],
+  "go.formatTool": "custom",
+  "go.alternateTools": {
+    "customFormatter": "golangci-lint"
+  },
+  "go.formatFlags": ["fmt", "--stdin"]
 }

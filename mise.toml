@@ -1,4 +1,8 @@
 [tools]
+# Go
+go = "1.25"
+golangci-lint = "2"
+
 # YAML
 uv = "latest" # for install yamllint
 
