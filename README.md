@@ -17,8 +17,9 @@ Download the latest release for your platform from the [releases page](https://g
 
 #### Automated Installation (Linux/macOS)
 
+Install latest version.
+
 ```bash
-# Install latest version
 curl -fsSL https://raw.githubusercontent.com/23prime/claude-launcher/main/install.sh | bash
 ```
 
