@@ -49,7 +49,7 @@ tar -xzf claude-launcher-darwin-arm64.tar.gz
 
 # Make executable and move to PATH
 chmod +x claude-launcher-*
-sudo mv claude-launcher-* /usr/local/bin/claude-launcher
+mv claude-launcher-* ~/.local/bin/claude-launcher
 ```
 
 **Windows:**
@@ -68,7 +68,7 @@ go install github.com/23prime/claude-launcher/cmd/claude-launcher@latest
 git clone https://github.com/23prime/claude-launcher
 cd claude-launcher
 task go:build
-sudo mv bin/claude-launcher /usr/local/bin/
+mv bin/claude-launcher ~/.local/bin/
 ```
 
 ## Configuration

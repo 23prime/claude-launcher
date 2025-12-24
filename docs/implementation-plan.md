@@ -338,7 +338,7 @@ Download platform-specific binary from GitHub Releases
 git clone https://github.com/23prime/claude-launcher
 cd claude-launcher
 task go:build
-sudo mv bin/claude-launcher /usr/local/bin/
+mv bin/claude-launcher ~/.local/bin/
 ```
 
 ## 7. Future Enhancements

@@ -5,7 +5,7 @@ set -e
 # Usage: curl -fsSL https://raw.githubusercontent.com/23prime/claude-launcher/main/install.sh | bash
 
 REPO="23prime/claude-launcher"
-INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
+INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 BINARY_NAME="claude-launcher"
 
 # Colors for output
@@ -105,6 +105,9 @@ main() {
 
     # Install binary
     info "Installing to ${INSTALL_DIR}..."
+    # Create install directory if it doesn't exist
+    mkdir -p "${INSTALL_DIR}"
+
     if [ -w "${INSTALL_DIR}" ]; then
         mv "${BINARY_PATH}" "${INSTALL_DIR}/${BINARY_NAME}"
     else
