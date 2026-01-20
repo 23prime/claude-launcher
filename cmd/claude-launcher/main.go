@@ -40,6 +40,9 @@ func run() int {
 	showVersion := flag.Bool("version", false, "Show version information")
 	flag.BoolVar(showVersion, "v", false, "Show version information (shorthand)")
 
+	showConfig := flag.Bool("show-config", false, "Show configuration file path and contents")
+	flag.BoolVar(showConfig, "c", false, "Show configuration file path and contents (shorthand)")
+
 	flag.Parse()
 
 	printer := ui.NewPrinter(os.Stderr)
@@ -52,6 +55,11 @@ func run() int {
 
 	if *showVersion {
 		showVersionInformation()
+		return exitSuccess
+	}
+
+	if *showConfig {
+		showConfigFile()
 		return exitSuccess
 	}
 
@@ -140,9 +148,10 @@ USAGE:
     claude-launcher [OPTIONS] [CLAUDE_ARGUMENTS...]
 
 OPTIONS:
-    -h, --help        Show this help message
-    -l, --show-dirs   Show configured allowed directories
-    -v, --version     Show version information
+    -h, --help         Show this help message
+    -l, --show-dirs    Show configured allowed directories
+    -c, --show-config  Show configuration file path and contents
+    -v, --version      Show version information
 
 DESCRIPTION:
     Combines directory security, account selection, and session management
@@ -205,4 +214,30 @@ func showVersionInformation() {
 	fmt.Printf("claude-launcher %s\n", Version)
 	fmt.Printf("  commit: %s\n", GitCommit)
 	fmt.Printf("  built:  %s\n", BuildDate)
+}
+
+func showConfigFile() {
+	configPath, err := config.DefaultConfigPath()
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Config file: %s\n\n", configPath)
+
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("(file does not exist)")
+			fmt.Println("\nCreate it with:")
+			fmt.Printf("  mkdir -p $(dirname %s)\n", configPath)
+			fmt.Printf("  echo '{\"allowedDirs\": []}' > %s\n", configPath)
+		} else {
+			fmt.Printf("Error reading file: %v\n", err)
+		}
+		return
+	}
+
+	fmt.Println("Contents:")
+	fmt.Println(string(data))
 }
