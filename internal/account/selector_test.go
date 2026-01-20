@@ -60,3 +60,76 @@ func TestSelectAccount_NoAccountsConfigured(t *testing.T) {
 
 	_ = tmpDir // Prevent unused variable warning
 }
+
+func TestFindAccountByName_AccountFound(t *testing.T) {
+	// Set up test accounts
+	t.Setenv("CLAUDE_ACCOUNTS", "Personal:/home/user/.claude-personal,Work:/home/user/.claude-work")
+
+	// Test finding by name
+	selected, found, err := FindAccountByName("Personal")
+	if err != nil {
+		t.Errorf("FindAccountByName() error = %v", err)
+		return
+	}
+
+	if !found {
+		t.Error("FindAccountByName() should return found=true for existing account")
+		return
+	}
+
+	if selected == nil {
+		t.Error("FindAccountByName() returned nil for existing account")
+		return
+	}
+
+	if selected.Name != "Personal" {
+		t.Errorf("FindAccountByName() = %v, expected Personal", selected.Name)
+	}
+}
+
+func TestFindAccountByName_SecondAccountFound(t *testing.T) {
+	// Set up test accounts
+	t.Setenv("CLAUDE_ACCOUNTS", "Personal:/home/user/.claude-personal,Work:/home/user/.claude-work")
+
+	// Test finding second account by name
+	selected, found, err := FindAccountByName("Work")
+	if err != nil {
+		t.Errorf("FindAccountByName() error = %v", err)
+		return
+	}
+
+	if !found {
+		t.Error("FindAccountByName() should return found=true for existing account")
+		return
+	}
+
+	if selected == nil {
+		t.Error("FindAccountByName() returned nil for existing account")
+		return
+	}
+
+	if selected.Name != "Work" {
+		t.Errorf("FindAccountByName() = %v, expected Work", selected.Name)
+	}
+}
+
+func TestFindAccountByName_AccountNotFound(t *testing.T) {
+	// Set up test accounts
+	t.Setenv("CLAUDE_ACCOUNTS", "Personal:/home/user/.claude-personal,Work:/home/user/.claude-work")
+
+	// Test finding non-existent account
+	selected, found, err := FindAccountByName("NonExistent")
+	if err != nil {
+		t.Errorf("FindAccountByName() error = %v", err)
+		return
+	}
+
+	if found {
+		t.Error("FindAccountByName() should return found=false for non-existent account")
+		return
+	}
+
+	if selected != nil {
+		t.Error("FindAccountByName() should return nil for non-existent account")
+	}
+}

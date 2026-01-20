@@ -43,6 +43,9 @@ func run() int {
 	showConfig := flag.Bool("show-config", false, "Show configuration file path and contents")
 	flag.BoolVar(showConfig, "c", false, "Show configuration file path and contents (shorthand)")
 
+	accountName := flag.String("account", "", "Account name to use (must exist in config)")
+	flag.StringVar(accountName, "a", "", "Account name to use (shorthand)")
+
 	flag.Parse()
 
 	printer := ui.NewPrinter(os.Stderr)
@@ -98,10 +101,34 @@ func run() int {
 	printer.ShowDirectoryAllowed()
 
 	// Select account (if configured)
-	selectedAccount, err := account.SelectAccount()
-	if err != nil {
-		printer.Error("Failed to select account: %v\n", err)
-		return exitError
+	var selectedAccount *account.Account
+	if *accountName != "" {
+		// Try to find the specified account
+		found, foundOk, err := account.FindAccountByName(*accountName)
+		if err != nil {
+			printer.Error("Failed to find account: %v\n", err)
+			return exitError
+		}
+
+		if foundOk {
+			selectedAccount = found
+		} else {
+			// Account not found - show warning before interactive selection
+			printer.ShowAccountNotFound(*accountName)
+			selectedAccount, err = account.SelectAccountInteractively()
+			if err != nil {
+				printer.Error("Failed to select account: %v\n", err)
+				return exitError
+			}
+		}
+	} else {
+		// No account name specified - use interactive selection
+		var err error
+		selectedAccount, err = account.SelectAccountInteractively()
+		if err != nil {
+			printer.Error("Failed to select account: %v\n", err)
+			return exitError
+		}
 	}
 
 	var configDir string
@@ -152,6 +179,7 @@ OPTIONS:
     -l, --show-dirs    Show configured allowed directories
     -c, --show-config  Show configuration file path and contents
     -v, --version      Show version information
+    -a, --account      Account name to use (skips interactive selection)
 
 DESCRIPTION:
     Combines directory security, account selection, and session management
@@ -173,7 +201,7 @@ CONFIGURATION (priority order):
         Example: {"allowedDirs": ["/home/user/projects"]}
 
     Multiple Accounts (optional):
-    1. CLAUDE_ACCOUNTS (highest priority)
+    1. CLAUDE_ACCOUNTS environment variable (highest priority)
         Comma-separated list of Name:ConfigDir pairs
         Example: export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
@@ -188,7 +216,7 @@ EXAMPLES:
     # Configure allowed directories via environment variable
     export CLAUDE_SAFE_DIRS="$HOME/develop:$HOME/projects"
 
-    # Configure multiple accounts
+    # Configure multiple accounts via environment variable
     export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
     # Or configure via config file
@@ -201,8 +229,11 @@ EXAMPLES:
     #   ]
     # }
 
-    # Launch Claude Code
+    # Launch Claude Code (interactive account selection)
     claude-launcher
+
+    # Launch with specific account (skips interactive selection)
+    claude-launcher --account Personal
 
     # Show allowed directories
     claude-launcher --show-dirs

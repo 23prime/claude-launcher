@@ -137,9 +137,25 @@ claude-launcher --help
 # Show configured directories
 claude-launcher --show-dirs
 
+# Show config file path and contents
+claude-launcher --show-config
+
+# Specify account by name (skips interactive selection)
+claude-launcher --account Personal
+
 # Pass arguments to Claude
 claude-launcher --model opus
 ```
+
+### Command-line Options
+
+| Option          | Short | Description                                       |
+| --------------- | ----- | ------------------------------------------------- |
+| `--help`        | `-h`  | Show help message                                 |
+| `--show-dirs`   | `-l`  | Show configured allowed directories               |
+| `--show-config` | `-c`  | Show configuration file path and contents         |
+| `--version`     | `-v`  | Show version information                          |
+| `--account`     | `-a`  | Account name to use (skips interactive selection) |
 
 ### Example session
 
@@ -155,7 +171,7 @@ Continue previous Claude session?
 → Continuing previous session...
 ```
 
-With multiple accounts configured:
+With multiple accounts configured (interactive selection):
 
 ```sh
 $ cd ~/develop/myproject
@@ -171,6 +187,32 @@ Select Claude account:
 Continue previous Claude session?
   [Y/n] (default: y): y
 → Continuing previous session...
+```
+
+With `--account` option (skips interactive selection):
+
+```sh
+$ claude-launcher --account Personal
+✓ Directory allowed
+
+✓ Account: Personal (~/.claude-personal)
+
+Continue previous Claude session?
+  [Y/n] (default: y): y
+→ Continuing previous session...
+```
+
+When specified account is not found:
+
+```sh
+$ claude-launcher --account Unknown
+✓ Directory allowed
+
+⚠ Account 'Unknown' not found in configuration
+
+Select Claude account:
+  👉 Personal (~/.claude-personal)
+    Work (~/.claude-work)
 ```
 
 ## Development

@@ -111,3 +111,10 @@ func (p *Printer) ShowNoAccountsConfigured() {
 	p.Print("Using default Claude configuration\n")
 	p.Print("\n")
 }
+
+// ShowAccountNotFound shows a warning that the specified account was not found
+func (p *Printer) ShowAccountNotFound(name string) {
+	p.Warning("⚠")
+	p.Print(" Account '%s' not found in configuration\n", name)
+	p.Print("\n")
+}

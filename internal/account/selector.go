@@ -59,6 +59,41 @@ func (s *InteractiveSelector) Select(accounts []Account) (*Account, error) {
 // SelectAccount loads account configuration and prompts for selection if needed
 // Returns nil if no accounts are configured (uses default)
 func SelectAccount() (*Account, error) {
+	return SelectAccountInteractively()
+}
+
+// FindAccountByName looks up an account by name from config
+// Returns (account, found) where found indicates if the name was matched
+// Returns (nil, false) if no accounts are configured or name not found
+func FindAccountByName(accountName string) (*Account, bool, error) {
+	cfg, err := LoadAccountConfig()
+	if err != nil {
+		return nil, false, fmt.Errorf("failed to load account config: %w", err)
+	}
+
+	// No accounts configured - use default
+	if cfg == nil || len(cfg.Accounts) == 0 {
+		return nil, false, nil
+	}
+
+	// If account name is specified, try to find it
+	if accountName != "" {
+		for i := range cfg.Accounts {
+			if cfg.Accounts[i].Name == accountName {
+				return &cfg.Accounts[i], true, nil
+			}
+		}
+		// Account name not found
+		return nil, false, nil
+	}
+
+	// No account name specified, need interactive selection
+	return nil, false, nil
+}
+
+// SelectAccountInteractively prompts the user to select an account
+// Returns nil if no accounts are configured
+func SelectAccountInteractively() (*Account, error) {
 	cfg, err := LoadAccountConfig()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load account config: %w", err)
