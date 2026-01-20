@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/23prime/claude-launcher/internal/account"
 	"github.com/23prime/claude-launcher/internal/config"
 	"github.com/23prime/claude-launcher/internal/launcher"
 	"github.com/23prime/claude-launcher/internal/security"
@@ -88,6 +89,19 @@ func run() int {
 
 	printer.ShowDirectoryAllowed()
 
+	// Select account (if configured)
+	selectedAccount, err := account.SelectAccount()
+	if err != nil {
+		printer.Error("Failed to select account: %v\n", err)
+		return exitError
+	}
+
+	var configDir string
+	if selectedAccount != nil {
+		printer.ShowAccountSelected(selectedAccount.Name, selectedAccount.ConfigDir)
+		configDir = selectedAccount.ConfigDir
+	}
+
 	// Ask user about session continuation
 	prompter := session.NewInteractivePrompter(os.Stdin, printer)
 	shouldContinue, err := prompter.AskContinue()
@@ -106,8 +120,9 @@ func run() int {
 	// Launch Claude
 	l := launcher.NewLauncher()
 	launchOpts := launcher.LaunchOptions{
-		Continue: shouldContinue,
-		Args:     flag.Args(),
+		Continue:  shouldContinue,
+		Args:      flag.Args(),
+		ConfigDir: configDir,
 	}
 
 	if err := l.Launch(launchOpts); err != nil {
@@ -127,16 +142,19 @@ USAGE:
 OPTIONS:
     -h, --help        Show this help message
     -l, --show-dirs   Show configured allowed directories
-	-v, --version     Show version information
+    -v, --version     Show version information
 
 DESCRIPTION:
-    Combines directory security and session management for Claude Code.
+    Combines directory security, account selection, and session management
+    for Claude Code.
 
     1. Checks if current directory is in allowed list
-    2. Prompts to continue previous session or start fresh
-    3. Launches Claude Code with appropriate flags
+    2. Prompts to select account (if multiple accounts configured)
+    3. Prompts to continue previous session or start fresh
+    4. Launches Claude Code with appropriate flags
 
 CONFIGURATION (priority order):
+    Allowed Directories:
     1. CLAUDE_SAFE_DIRS (highest priority)
         Colon-separated list of allowed directory paths
         Example: export CLAUDE_SAFE_DIRS="$HOME/projects:$HOME/work"
@@ -145,15 +163,34 @@ CONFIGURATION (priority order):
         Read from customConfig.allowedDirs array
         Example: {"customConfig": {"allowedDirs": ["/home/user/projects"]}}
 
+    Multiple Accounts (optional):
+    1. CLAUDE_ACCOUNTS (highest priority)
+        Comma-separated list of Name:ConfigDir pairs
+        Example: export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
+
+    2. ~/.claude/settings.json (fallback)
+        Read from customConfig.accounts array
+        Example: {"customConfig": {"accounts": [
+            {"name": "Personal", "configDir": "~/.claude-personal"},
+            {"name": "Work", "configDir": "~/.claude-work"}
+        ]}}
+
 EXAMPLES:
-    # Configure via environment variable
+    # Configure allowed directories via environment variable
     export CLAUDE_SAFE_DIRS="$HOME/develop:$HOME/projects"
+
+    # Configure multiple accounts
+    export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
     # Or configure via settings.json
     # Edit ~/.claude/settings.json and add:
     # {
     #   "customConfig": {
-    #     "allowedDirs": ["/home/user/develop", "/home/user/projects"]
+    #     "allowedDirs": ["/home/user/develop", "/home/user/projects"],
+    #     "accounts": [
+    #       {"name": "Personal", "configDir": "~/.claude-personal"},
+    #       {"name": "Work", "configDir": "~/.claude-work"}
+    #     ]
     #   }
     # }
 

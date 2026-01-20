@@ -20,8 +20,9 @@ func NewLauncher() *Launcher {
 
 // LaunchOptions contains options for launching Claude
 type LaunchOptions struct {
-	Continue bool
-	Args     []string
+	Continue  bool
+	Args      []string
+	ConfigDir string // Optional: Sets CLAUDE_CONFIG_DIR environment variable
 }
 
 // Launch executes Claude Code with the specified options
@@ -38,6 +39,12 @@ func (l *Launcher) Launch(opts LaunchOptions) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = os.Environ()
+
+	// Set CLAUDE_CONFIG_DIR if specified
+	if opts.ConfigDir != "" {
+		cmd.Env = append(cmd.Env, "CLAUDE_CONFIG_DIR="+opts.ConfigDir)
+	}
 
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to run claude: %w", err)

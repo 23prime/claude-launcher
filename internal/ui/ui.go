@@ -98,3 +98,16 @@ func (p *Printer) ShowStartingNewSession() {
 	p.Success("→")
 	p.Print(" Starting new session...\n")
 }
+
+// ShowAccountSelected shows that an account was selected
+func (p *Printer) ShowAccountSelected(name string, configDir string) {
+	p.Success("✓")
+	p.Print(" Account: %s (%s)\n", name, configDir)
+	p.Print("\n")
+}
+
+// ShowNoAccountsConfigured shows that no accounts are configured (using default)
+func (p *Printer) ShowNoAccountsConfigured() {
+	p.Print("Using default Claude configuration\n")
+	p.Print("\n")
+}

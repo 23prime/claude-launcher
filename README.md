@@ -1,10 +1,11 @@
 # Claude Launcher
 
-Comprehensive launcher for Claude Code with directory security and session management.
+Comprehensive launcher for Claude Code with directory security, multi-account support, and session management.
 
 ## Features
 
 - **Directory Security**: Only allows Claude Code to run in pre-configured directories
+- **Multi-Account Support**: Switch between multiple Claude accounts with arrow-key selection
 - **Session Management**: Prompts to continue previous session or start fresh
 - **Flexible Configuration**: Supports environment variables and JSON configuration file
 - **Cross-platform**: Works on Linux, macOS, and other POSIX-compatible systems
@@ -96,6 +97,36 @@ Edit `~/.claude/settings.json`:
 }
 ```
 
+### Multi-Account Configuration (Optional)
+
+Configure multiple Claude accounts to switch between different configurations (e.g., personal vs work accounts).
+
+#### Method 1: Environment Variable
+
+```bash
+export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
+```
+
+Format: `Name1:ConfigDir1,Name2:ConfigDir2,...`
+
+#### Method 2: Settings File
+
+Edit `~/.claude/settings.json`:
+
+```json
+{
+  "customConfig": {
+    "allowedDirs": ["/home/user/develop"],
+    "accounts": [
+      {"name": "Personal", "configDir": "~/.claude-personal"},
+      {"name": "Work", "configDir": "~/.claude-work"}
+    ]
+  }
+}
+```
+
+**Note**: When an account is selected, `CLAUDE_CONFIG_DIR` is set to the account's config directory before launching Claude Code.
+
 ## Usage
 
 ### Basic usage
@@ -116,10 +147,30 @@ claude-launcher --model opus
 
 ### Example session
 
+Without accounts configured:
+
 ```sh
 $ cd ~/develop/myproject
 $ claude-launcher
 ✓ Directory allowed
+
+Continue previous Claude session?
+  [Y/n] (default: y): y
+→ Continuing previous session...
+```
+
+With multiple accounts configured:
+
+```sh
+$ cd ~/develop/myproject
+$ claude-launcher
+✓ Directory allowed
+
+Select Claude account:
+  👉 Personal (~/.claude-personal)
+    Work (~/.claude-work)
+✔ Personal (~/.claude-personal)
+✓ Account: Personal (~/.claude-personal)
 
 Continue previous Claude session?
   [Y/n] (default: y): y
@@ -167,6 +218,7 @@ claude-launcher/
 ├── cmd/
 │   └── claude-launcher/   # Main application entry point
 ├── internal/
+│   ├── account/           # Multi-account configuration and selection
 │   ├── config/            # Configuration loading
 │   ├── security/          # Directory access checking
 │   ├── session/           # Session continuation prompts
