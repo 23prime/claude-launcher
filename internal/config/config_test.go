@@ -141,21 +141,17 @@ func TestFileLoader(t *testing.T) {
 		expectedLen int
 	}{
 		{
-			name: "valid settings",
+			name: "valid config",
 			jsonContent: `{
-				"customConfig": {
-					"allowedDirs": ["/home/user/projects", "/home/user/work"]
-				}
+				"allowedDirs": ["/home/user/projects", "/home/user/work"]
 			}`,
 			wantErr:     false,
 			expectedLen: 2,
 		},
 		{
-			name: "valid settings with tilde",
+			name: "valid config with tilde",
 			jsonContent: `{
-				"customConfig": {
-					"allowedDirs": ["~/projects"]
-				}
+				"allowedDirs": ["~/projects"]
 			}`,
 			wantErr:     false,
 			expectedLen: 1,
@@ -163,9 +159,7 @@ func TestFileLoader(t *testing.T) {
 		{
 			name: "empty allowedDirs",
 			jsonContent: `{
-				"customConfig": {
-					"allowedDirs": []
-				}
+				"allowedDirs": []
 			}`,
 			wantErr: true,
 		},
@@ -175,7 +169,7 @@ func TestFileLoader(t *testing.T) {
 			wantErr:     true,
 		},
 		{
-			name: "missing customConfig",
+			name: "missing allowedDirs",
 			jsonContent: `{
 				"otherConfig": {}
 			}`,
@@ -223,11 +217,9 @@ func TestFileLoaderNonExistentFile(t *testing.T) {
 
 func TestChainLoader(t *testing.T) {
 	tmpDir := t.TempDir()
-	testFile := filepath.Join(tmpDir, "settings.json")
+	testFile := filepath.Join(tmpDir, "config.json")
 	jsonContent := `{
-		"customConfig": {
-			"allowedDirs": ["/from/file"]
-		}
+		"allowedDirs": ["/from/file"]
 	}`
 	if err := os.WriteFile(testFile, []byte(jsonContent), 0644); err != nil {
 		t.Fatalf("failed to create test file: %v", err)

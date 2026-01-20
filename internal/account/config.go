@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/23prime/claude-launcher/internal/config"
@@ -86,7 +85,7 @@ func parseAccountsString(s string) ([]Account, error) {
 	return accounts, nil
 }
 
-// FileLoader loads account configuration from ~/.claude/settings.json
+// FileLoader loads account configuration from ~/.config/claude-launcher/config.json
 type FileLoader struct {
 	Path string
 }
@@ -97,40 +96,38 @@ type accountJSON struct {
 	ConfigDir string `json:"configDir"`
 }
 
-// settingsJSON represents the structure of ~/.claude/settings.json for accounts
-type settingsJSON struct {
-	CustomConfig struct {
-		Accounts []accountJSON `json:"accounts"`
-	} `json:"customConfig"`
+// configJSON represents the structure of the config file for accounts
+type configJSON struct {
+	Accounts []accountJSON `json:"accounts"`
 }
 
 // Load implements the Loader interface for FileLoader
 func (f *FileLoader) Load() (*AccountConfig, error) {
 	path := f.Path
 	if path == "" {
-		homeDir, err := os.UserHomeDir()
+		var err error
+		path, err = config.DefaultConfigPath()
 		if err != nil {
-			return nil, fmt.Errorf("failed to get home directory: %w", err)
+			return nil, err
 		}
-		path = filepath.Join(homeDir, ".claude", "settings.json")
 	}
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read settings file: %w", err)
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
-	var settings settingsJSON
-	if err := json.Unmarshal(data, &settings); err != nil {
-		return nil, fmt.Errorf("failed to parse settings JSON: %w", err)
+	var cfg configJSON
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return nil, fmt.Errorf("failed to parse config JSON: %w", err)
 	}
 
-	if len(settings.CustomConfig.Accounts) == 0 {
-		return nil, fmt.Errorf("no accounts found in settings.json")
+	if len(cfg.Accounts) == 0 {
+		return nil, fmt.Errorf("no accounts found in config file")
 	}
 
-	accounts := make([]Account, 0, len(settings.CustomConfig.Accounts))
-	for _, acc := range settings.CustomConfig.Accounts {
+	accounts := make([]Account, 0, len(cfg.Accounts))
+	for _, acc := range cfg.Accounts {
 		if acc.Name == "" || acc.ConfigDir == "" {
 			return nil, fmt.Errorf("invalid account: name and configDir cannot be empty")
 		}
@@ -170,7 +167,7 @@ func (c *ChainLoader) Load() (*AccountConfig, error) {
 
 // LoadAccountConfig loads account configuration with priority order:
 // 1. CLAUDE_ACCOUNTS environment variable
-// 2. ~/.claude/settings.json
+// 2. ~/.config/claude-launcher/config.json
 // Returns nil if no accounts are configured (not an error)
 func LoadAccountConfig() (*AccountConfig, error) {
 	loader := &ChainLoader{

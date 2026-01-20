@@ -159,21 +159,21 @@ CONFIGURATION (priority order):
         Colon-separated list of allowed directory paths
         Example: export CLAUDE_SAFE_DIRS="$HOME/projects:$HOME/work"
 
-    2. ~/.claude/settings.json (fallback)
-        Read from customConfig.allowedDirs array
-        Example: {"customConfig": {"allowedDirs": ["/home/user/projects"]}}
+    2. ~/.config/claude-launcher/config.json (fallback)
+        Read from allowedDirs array
+        Example: {"allowedDirs": ["/home/user/projects"]}
 
     Multiple Accounts (optional):
     1. CLAUDE_ACCOUNTS (highest priority)
         Comma-separated list of Name:ConfigDir pairs
         Example: export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
-    2. ~/.claude/settings.json (fallback)
-        Read from customConfig.accounts array
-        Example: {"customConfig": {"accounts": [
+    2. ~/.config/claude-launcher/config.json (fallback)
+        Read from accounts array
+        Example: {"accounts": [
             {"name": "Personal", "configDir": "~/.claude-personal"},
             {"name": "Work", "configDir": "~/.claude-work"}
-        ]}}
+        ]}
 
 EXAMPLES:
     # Configure allowed directories via environment variable
@@ -182,16 +182,14 @@ EXAMPLES:
     # Configure multiple accounts
     export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
-    # Or configure via settings.json
-    # Edit ~/.claude/settings.json and add:
+    # Or configure via config file
+    # Create ~/.config/claude-launcher/config.json:
     # {
-    #   "customConfig": {
-    #     "allowedDirs": ["/home/user/develop", "/home/user/projects"],
-    #     "accounts": [
-    #       {"name": "Personal", "configDir": "~/.claude-personal"},
-    #       {"name": "Work", "configDir": "~/.claude-work"}
-    #     ]
-    #   }
+    #   "allowedDirs": ["/home/user/develop", "/home/user/projects"],
+    #   "accounts": [
+    #     {"name": "Personal", "configDir": "~/.claude-personal"},
+    #     {"name": "Work", "configDir": "~/.claude-work"}
+    #   ]
     # }
 
     # Launch Claude Code

@@ -159,12 +159,10 @@ func TestFileLoader(t *testing.T) {
 		{
 			name: "valid accounts",
 			jsonContent: `{
-				"customConfig": {
-					"accounts": [
-						{"name": "Personal", "configDir": "/home/user/.claude-personal"},
-						{"name": "Work", "configDir": "/home/user/.claude-work"}
-					]
-				}
+				"accounts": [
+					{"name": "Personal", "configDir": "/home/user/.claude-personal"},
+					{"name": "Work", "configDir": "/home/user/.claude-work"}
+				]
 			}`,
 			wantErr:     false,
 			expectedLen: 2,
@@ -172,11 +170,9 @@ func TestFileLoader(t *testing.T) {
 		{
 			name: "valid accounts with tilde",
 			jsonContent: `{
-				"customConfig": {
-					"accounts": [
-						{"name": "Personal", "configDir": "~/.claude-personal"}
-					]
-				}
+				"accounts": [
+					{"name": "Personal", "configDir": "~/.claude-personal"}
+				]
 			}`,
 			wantErr:     false,
 			expectedLen: 1,
@@ -184,9 +180,7 @@ func TestFileLoader(t *testing.T) {
 		{
 			name: "empty accounts",
 			jsonContent: `{
-				"customConfig": {
-					"accounts": []
-				}
+				"accounts": []
 			}`,
 			wantErr: true,
 		},
@@ -196,7 +190,7 @@ func TestFileLoader(t *testing.T) {
 			wantErr:     true,
 		},
 		{
-			name: "missing customConfig",
+			name: "missing accounts",
 			jsonContent: `{
 				"otherConfig": {}
 			}`,
@@ -205,22 +199,18 @@ func TestFileLoader(t *testing.T) {
 		{
 			name: "account with empty name",
 			jsonContent: `{
-				"customConfig": {
-					"accounts": [
-						{"name": "", "configDir": "/home/user/.claude"}
-					]
-				}
+				"accounts": [
+					{"name": "", "configDir": "/home/user/.claude"}
+				]
 			}`,
 			wantErr: true,
 		},
 		{
 			name: "account with empty configDir",
 			jsonContent: `{
-				"customConfig": {
-					"accounts": [
-						{"name": "Personal", "configDir": ""}
-					]
-				}
+				"accounts": [
+					{"name": "Personal", "configDir": ""}
+				]
 			}`,
 			wantErr: true,
 		},
@@ -228,7 +218,7 @@ func TestFileLoader(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			testFile := filepath.Join(tmpDir, "settings.json")
+			testFile := filepath.Join(tmpDir, "config.json")
 			if err := os.WriteFile(testFile, []byte(tt.jsonContent), 0644); err != nil {
 				t.Fatalf("failed to create test file: %v", err)
 			}
@@ -264,13 +254,11 @@ func TestFileLoaderNonExistentFile(t *testing.T) {
 
 func TestChainLoader(t *testing.T) {
 	tmpDir := t.TempDir()
-	testFile := filepath.Join(tmpDir, "settings.json")
+	testFile := filepath.Join(tmpDir, "config.json")
 	jsonContent := `{
-		"customConfig": {
-			"accounts": [
-				{"name": "FromFile", "configDir": "/from/file"}
-			]
-		}
+		"accounts": [
+			{"name": "FromFile", "configDir": "/from/file"}
+		]
 	}`
 	if err := os.WriteFile(testFile, []byte(jsonContent), 0644); err != nil {
 		t.Fatalf("failed to create test file: %v", err)

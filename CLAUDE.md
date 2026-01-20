@@ -133,16 +133,14 @@ cd ~/develop
 export CLAUDE_SAFE_DIRS="$HOME/develop:$HOME/projects"
 ```
 
-### ~/.claude/settings.json
+### ~/.config/claude-launcher/config.json
 
 ```json
 {
-  "customConfig": {
-    "allowedDirs": [
-      "/home/user/develop",
-      "/home/user/projects"
-    ]
-  }
+  "allowedDirs": [
+    "/home/user/develop",
+    "/home/user/projects"
+  ]
 }
 ```
 

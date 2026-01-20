@@ -75,8 +75,8 @@ func (p *Printer) ShowConfigError() {
 	p.Print("1. Environment variable (colon-separated):\n")
 	p.Print("   export CLAUDE_SAFE_DIRS=\"$HOME/projects:$HOME/work\"\n")
 	p.Print("\n")
-	p.Print("2. Edit ~/.claude/settings.json:\n")
-	p.Print("   {\"customConfig\": {\"allowedDirs\": [\"/home/user/projects\"]}}\n")
+	p.Print("2. Create ~/.config/claude-launcher/config.json:\n")
+	p.Print("   {\"allowedDirs\": [\"/home/user/projects\"]}\n")
 	p.Print("\n")
 }
 

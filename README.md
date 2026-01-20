@@ -82,18 +82,16 @@ Configure allowed directories using one of these methods:
 export CLAUDE_SAFE_DIRS="$HOME/develop:$HOME/projects"
 ```
 
-### Method 2: Settings File (Priority 2)
+### Method 2: Config File (Priority 2)
 
-Edit `~/.claude/settings.json`:
+Create `~/.config/claude-launcher/config.json`:
 
 ```json
 {
-  "customConfig": {
-    "allowedDirs": [
-      "/home/user/develop",
-      "/home/user/projects"
-    ]
-  }
+  "allowedDirs": [
+    "/home/user/develop",
+    "/home/user/projects"
+  ]
 }
 ```
 
@@ -109,19 +107,17 @@ export CLAUDE_ACCOUNTS="Personal:~/.claude-personal,Work:~/.claude-work"
 
 Format: `Name1:ConfigDir1,Name2:ConfigDir2,...`
 
-#### Method 2: Settings File
+#### Method 2: Config File
 
-Edit `~/.claude/settings.json`:
+Add to `~/.config/claude-launcher/config.json`:
 
 ```json
 {
-  "customConfig": {
-    "allowedDirs": ["/home/user/develop"],
-    "accounts": [
-      {"name": "Personal", "configDir": "~/.claude-personal"},
-      {"name": "Work", "configDir": "~/.claude-work"}
-    ]
-  }
+  "allowedDirs": ["/home/user/develop"],
+  "accounts": [
+    {"name": "Personal", "configDir": "~/.claude-personal"},
+    {"name": "Work", "configDir": "~/.claude-work"}
+  ]
 }
 ```
 

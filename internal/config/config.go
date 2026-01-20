@@ -48,45 +48,52 @@ func (e *EnvLoader) Load() (*Config, error) {
 	return &Config{AllowedDirs: expandedDirs}, nil
 }
 
-// FileLoader loads configuration from ~/.claude/settings.json
+// DefaultConfigPath returns the default configuration file path
+func DefaultConfigPath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to get home directory: %w", err)
+	}
+	return filepath.Join(homeDir, ".config", "claude-launcher", "config.json"), nil
+}
+
+// FileLoader loads configuration from ~/.config/claude-launcher/config.json
 type FileLoader struct {
 	Path string
 }
 
-// settingsJSON represents the structure of ~/.claude/settings.json
-type settingsJSON struct {
-	CustomConfig struct {
-		AllowedDirs []string `json:"allowedDirs"`
-	} `json:"customConfig"`
+// configJSON represents the structure of the config file
+type configJSON struct {
+	AllowedDirs []string `json:"allowedDirs"`
 }
 
 // Load implements the Loader interface for FileLoader
 func (f *FileLoader) Load() (*Config, error) {
 	path := f.Path
 	if path == "" {
-		homeDir, err := os.UserHomeDir()
+		var err error
+		path, err = DefaultConfigPath()
 		if err != nil {
-			return nil, fmt.Errorf("failed to get home directory: %w", err)
+			return nil, err
 		}
-		path = filepath.Join(homeDir, ".claude", "settings.json")
 	}
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read settings file: %w", err)
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
-	var settings settingsJSON
-	if err := json.Unmarshal(data, &settings); err != nil {
-		return nil, fmt.Errorf("failed to parse settings JSON: %w", err)
+	var cfg configJSON
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return nil, fmt.Errorf("failed to parse config JSON: %w", err)
 	}
 
-	if len(settings.CustomConfig.AllowedDirs) == 0 {
-		return nil, fmt.Errorf("no allowedDirs found in settings.json")
+	if len(cfg.AllowedDirs) == 0 {
+		return nil, fmt.Errorf("no allowedDirs found in config file")
 	}
 
-	expandedDirs := make([]string, 0, len(settings.CustomConfig.AllowedDirs))
-	for _, dir := range settings.CustomConfig.AllowedDirs {
+	expandedDirs := make([]string, 0, len(cfg.AllowedDirs))
+	for _, dir := range cfg.AllowedDirs {
 		expanded, err := ExpandPath(dir)
 		if err != nil {
 			return nil, fmt.Errorf("failed to expand path %s: %w", dir, err)
@@ -123,7 +130,7 @@ func (c *ChainLoader) Load() (*Config, error) {
 
 // LoadConfig loads configuration with priority order:
 // 1. CLAUDE_SAFE_DIRS environment variable
-// 2. ~/.claude/settings.json
+// 2. ~/.config/claude-launcher/config.json
 func LoadConfig() (*Config, error) {
 	loader := &ChainLoader{
 		Loaders: []Loader{
