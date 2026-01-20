@@ -12,12 +12,6 @@ tasks:
           -ldflags="-X main.Version=${VERSION} -X main.GitCommit=${COMMIT} -X main.BuildDate=${BUILD_DATE}" \
           -o bin/claude-launcher \
           ./cmd/claude-launcher
-    sources:
-      - "**/*.go"
-      - go.mod
-      - go.sum
-    generates:
-      - bin/claude-launcher
 
   test:
     desc: Run tests
