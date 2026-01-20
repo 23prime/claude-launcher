@@ -111,7 +111,6 @@ tasks:
     desc: Install development tools
     cmds:
       - go install github.com/google/go-licenses/v2@latest
-      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
   check-licenses:
     desc: Check licenses of dependencies
