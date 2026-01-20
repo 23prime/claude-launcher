@@ -64,6 +64,41 @@ download() {
     fi
 }
 
+# Create default config file
+create_default_config() {
+    local config_dir="$HOME/.config/claude-launcher"
+    local config_file="$config_dir/config.json"
+
+    # Skip if config file already exists
+    if [ -f "$config_file" ]; then
+        info "Config file already exists: $config_file"
+        return
+    fi
+
+    # Create config directory
+    mkdir -p "$config_dir"
+
+    # Create default config file
+    cat > "$config_file" << 'EOF'
+{
+  "allowedDirs": [
+  ]
+}
+EOF
+
+    info "Created default config file: $config_file"
+    warn "Please edit $config_file to add your allowed directories."
+    echo ""
+    echo "  Example:"
+    echo "  {"
+    echo "    \"allowedDirs\": ["
+    echo "      \"${HOME}/develop\","
+    echo "      \"${HOME}/projects\""
+    echo "    ]"
+    echo "  }"
+    echo ""
+}
+
 main() {
     info "Installing ${BINARY_NAME}..."
 
@@ -114,6 +149,9 @@ main() {
         warn "Insufficient permissions. Using sudo..."
         sudo mv "${BINARY_PATH}" "${INSTALL_DIR}/${BINARY_NAME}"
     fi
+
+    # Create default config file
+    create_default_config
 
     # Verify installation
     if command_exists "${BINARY_NAME}"; then
