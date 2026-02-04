@@ -82,6 +82,7 @@ tasks:
   check:
     desc: Check Go code (vet and lint)
     cmds:
+      - task: vuln
       - task: vet
       - task: lint
       - task: test
@@ -110,3 +111,8 @@ tasks:
     desc: Check licenses of dependencies
     cmds:
       - go-licenses report ./cmd/claude-launcher
+
+  vuln:
+    desc: Check for vulnerabilities in dependencies
+    cmds:
+      - govulncheck ./...

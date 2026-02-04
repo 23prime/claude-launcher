@@ -2,6 +2,7 @@
 # Go
 go = "1.25"
 golangci-lint = "2"
+"go:golang.org/x/vuln/cmd/govulncheck" = "latest"
 
 # YAML
 uv = "latest" # for install yamllint
