@@ -8,6 +8,7 @@ linters:
     - errcheck
     - unparam
     - unused
+    - gosec
   exclusions:
     rules:
       - path: _test\.go
