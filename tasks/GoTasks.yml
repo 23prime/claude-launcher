@@ -110,7 +110,7 @@ tasks:
   check-licenses:
     desc: Check licenses of dependencies
     cmds:
-      - go-licenses report ./cmd/claude-launcher
+      - go-licenses report ./cmd/claude-launcher --template go-licenses.tpl
 
   vuln:
     desc: Check for vulnerabilities in dependencies
