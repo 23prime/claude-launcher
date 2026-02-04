@@ -8,6 +8,7 @@ linters:
     - errcheck
     - unparam
     - unused
+    - whitespace
     - gosec
   exclusions:
     rules:
