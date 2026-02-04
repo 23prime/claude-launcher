@@ -53,6 +53,7 @@ func DefaultConfigPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("failed to get home directory: %w", err)
+
 	}
 	return filepath.Join(homeDir, ".config", "claude-launcher", "config.json"), nil
 }
@@ -69,7 +70,7 @@ type configJSON struct {
 
 // Load implements the Loader interface for FileLoader
 func (f *FileLoader) Load() (*Config, error) {
-	path := f.Path
+	path := filepath.Clean(f.Path)
 	if path == "" {
 		var err error
 		path, err = DefaultConfigPath()

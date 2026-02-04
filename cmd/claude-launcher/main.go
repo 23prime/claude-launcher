@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/23prime/claude-launcher/internal/account"
 	"github.com/23prime/claude-launcher/internal/config"
@@ -254,6 +255,7 @@ func showConfigFile() {
 		return
 	}
 
+	configPath = filepath.Clean(configPath)
 	fmt.Printf("Config file: %s\n\n", configPath)
 
 	data, err := os.ReadFile(configPath)
@@ -261,7 +263,7 @@ func showConfigFile() {
 		if os.IsNotExist(err) {
 			fmt.Println("(file does not exist)")
 			fmt.Println("\nCreate it with:")
-			fmt.Printf("  mkdir -p $(dirname %s)\n", configPath)
+			fmt.Printf("  mkdir -p %s\n", filepath.Dir(configPath))
 			fmt.Printf("  echo '{\"allowedDirs\": []}' > %s\n", configPath)
 		} else {
 			fmt.Printf("Error reading file: %v\n", err)

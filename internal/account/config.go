@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/23prime/claude-launcher/internal/config"
@@ -103,7 +104,7 @@ type configJSON struct {
 
 // Load implements the Loader interface for FileLoader
 func (f *FileLoader) Load() (*AccountConfig, error) {
-	path := f.Path
+	path := filepath.Clean(f.Path)
 	if path == "" {
 		var err error
 		path, err = config.DefaultConfigPath()
