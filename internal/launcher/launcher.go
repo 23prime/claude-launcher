@@ -35,6 +35,7 @@ func (l *Launcher) Launch(opts LaunchOptions) error {
 
 	args = append(args, opts.Args...)
 
+	// #nosec G204 -- ClaudePath defaults to "claude" and args are user-provided CLI arguments
 	cmd := exec.Command(l.ClaudePath, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
