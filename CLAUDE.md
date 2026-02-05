@@ -35,41 +35,32 @@
 
 ### Completed
 
-- ✅ Complete Bash implementation (`tmp/claude-launcher.sh`)
 - ✅ Specification document (`docs/specification.md`)
-- ✅ Go implementation plan (`docs/implementation-plan.md`)
 - ✅ Go implementation (all phases complete)
-  - Phase 1: Basic structure (config loading, directory check)
-  - Phase 2: UI and session management
-  - Phase 3: Launch process and CLI
-  - Phase 4: Integration tests and release preparation
 
 ## Directory Structure
 
 ```txt
 claude-launcher/
 ├── docs/
-│   ├── specification.md         # Specification
-│   └── implementation-plan.md   # Go implementation plan
-├── tmp/
-│   └── claude-launcher.sh       # Bash version (reference)
+│   └── specification.md           # Specification
 ├── cmd/
-│   └── claude-launcher/         # Go implementation entry point
+│   └── claude-launcher/           # Go implementation entry point
 ├── internal/
-│   ├── config/                  # Configuration loading
-│   ├── security/                # Directory checking
-│   ├── session/                 # Session management
-│   ├── launcher/                # Claude Code execution
-│   └── ui/                      # User interface
+│   ├── config/                    # Configuration loading
+│   ├── security/                  # Directory checking
+│   ├── session/                   # Session management
+│   ├── launcher/                  # Claude Code execution
+│   └── ui/                        # User interface
 ├── tasks/
-│   └── GoTasks.yml              # Taskfile task definitions
-├── README.md                    # Project README
-└── CLAUDE.md                    # This file
+│   └── GoTasks.yml                # Taskfile task definitions
+├── README.md                      # Project README
+└── CLAUDE.md                      # This file
 ```
 
 ## Important Documents
 
-### 1. Specification (`docs/specification.md`)
+### Specification (`docs/specification.md`)
 
 Detailed specification analyzing the Bash version. Includes:
 
@@ -78,17 +69,6 @@ Detailed specification analyzing the Bash version. Includes:
 - Command-line interface
 - Error messages and user feedback
 - Execution flow diagram
-
-### 2. Implementation Plan (`docs/implementation-plan.md`)
-
-Go language implementation plan. Includes:
-
-- Project structure
-- Package design
-- Type definitions and key functions
-- Implementation steps (Phase 1-4)
-- Testing strategy
-- Build and deployment methods
 
 ## Development
 
@@ -177,18 +157,36 @@ This applies to:
 
 ### Go Coding Style
 
-- Format with `gofmt`
+- Format with `gofumpt` + `goimports` (via `golangci-lint run --fix`)
 - Static analysis with `golangci-lint`
 - Target 80%+ test coverage
 
+#### Enabled Linters
+
+| Linter | Category | Default |
+| -------- | ---------- | --------- |
+| govet | Bug detection | Yes |
+| staticcheck | Static analysis | Yes |
+| errcheck | Error handling | Yes |
+| unused | Dead code | Yes |
+| gosec | Security | No |
+| bidichk | Security | No |
+| errorlint | Error handling | No |
+| bodyclose | Resource leak | No |
+| unconvert | Dead code | No |
+| usestdlibvars | Clean code | No |
+| modernize | Modernization | No |
+
 ### Markdown Style
 
+- Use dashes (`-`) for unordered lists
+- Use asterisks (`*`) for emphasis and strong
 - Code block language specifications:
   - Directory structures: `txt`
-  - Shell examples: `sh`
+  - Shell examples: `sh` or `bash`
   - Go code: `go`
   - JSON: `json`
-  - YAML: `yml`
+  - YAML: `yml` or `yaml`
 
 ### Commit Messages
 
@@ -217,7 +215,6 @@ task go:test-coverage-report
 
 - [Claude Code Official Documentation](https://claude.ai/claude-code)
 - [Go Project Layout](https://github.com/golang-standards/project-layout)
-- Shell script version: `tmp/claude-launcher.sh`
 
 ## License
 

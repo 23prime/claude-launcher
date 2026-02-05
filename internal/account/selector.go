@@ -8,7 +8,7 @@ import (
 
 // Selector is an interface for selecting an account
 type Selector interface {
-	Select(accounts []Account) (*Account, error)
+	Select(_ []Account) (*Account, error)
 }
 
 // InteractiveSelector provides arrow-key based account selection

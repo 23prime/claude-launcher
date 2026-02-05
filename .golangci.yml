@@ -3,13 +3,19 @@ version: "2"
 
 linters:
   enable:
+    # Defaults
     - govet
     - staticcheck
     - errcheck
-    - unparam
     - unused
-    - whitespace
+    # Additional
     - gosec
+    - bidichk
+    - errorlint
+    - bodyclose
+    - unconvert
+    - usestdlibvars
+    - modernize
   exclusions:
     rules:
       - path: _test\.go
@@ -26,10 +32,12 @@ linters:
       exclude-functions:
         - os.Setenv
         - os.Unsetenv
+    unused:
+      parameters-are-used: false
 
 formatters:
   enable:
-    - gofmt
+    - gofumpt
     - goimports
   settings:
     goimports:

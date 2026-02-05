@@ -49,21 +49,6 @@ tasks:
     cmds:
       - ./bin/claude-launcher {{.CLI_ARGS}}
 
-  fmt:
-    desc: Format Go code
-    cmds:
-      - go fmt ./...
-
-  vet:
-    desc: Run go vet
-    cmds:
-      - go vet ./...
-
-  lint:
-    desc: Run golangci-lint
-    cmds:
-      - golangci-lint run
-
   mod-tidy:
     desc: Run go mod tidy
     cmds:
@@ -74,16 +59,20 @@ tasks:
     cmds:
       - go mod download
 
-  fix:
-    desc: Format Go code
+  lint:
+    desc: Run golangci-lint
     cmds:
-      - task: fmt
+      - golangci-lint run
+
+  fix:
+    desc: Run golangci-lint auto-fix (formatting and lint fixes)
+    cmds:
+      - golangci-lint run --fix
 
   check:
-    desc: Check Go code (vet and lint)
+    desc: Run vulnerability scan, linter, and unit tests
     cmds:
       - task: vuln
-      - task: vet
       - task: lint
       - task: test
 
@@ -92,15 +81,6 @@ tasks:
     cmds:
       - task: fix
       - task: check
-
-  all:
-    desc: Run clean, fmt, vet, test, and build
-    cmds:
-      - task: clean
-      - task: fmt
-      - task: vet
-      - task: test
-      - task: build
 
   install-tools:
     desc: Install development tools
