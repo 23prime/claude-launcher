@@ -16,7 +16,6 @@ linters:
     - unconvert
     - usestdlibvars
     - modernize
-    - whitespace
   exclusions:
     rules:
       - path: _test\.go
@@ -38,7 +37,7 @@ linters:
 
 formatters:
   enable:
-    - gofmt
+    - gofumpt
     - goimports
   settings:
     goimports:
