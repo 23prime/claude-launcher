@@ -104,7 +104,7 @@ type configJSON struct {
 
 // Load implements the Loader interface for FileLoader
 func (f *FileLoader) Load() (*AccountConfig, error) {
-	path := filepath.Clean(f.Path)
+	path := f.Path
 	if path == "" {
 		var err error
 		path, err = config.DefaultConfigPath()
@@ -113,6 +113,7 @@ func (f *FileLoader) Load() (*AccountConfig, error) {
 		}
 	}
 
+	path = filepath.Clean(path)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
