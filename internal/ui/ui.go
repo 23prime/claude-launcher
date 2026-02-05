@@ -59,10 +59,7 @@ func (p *Printer) ShowAccessDenied(currentDir string, allowedDirs []string) {
 	p.Print("Current directory: %s\n", currentDir)
 	p.Print("\n")
 	p.Print("Claude Code is not allowed to run in this directory.\n")
-	p.Print("Allowed directories:\n")
-	for _, dir := range allowedDirs {
-		p.Print("  - %s\n", dir)
-	}
+	p.ShowAllowedDirs(allowedDirs)
 	p.Print("\n")
 }
 
