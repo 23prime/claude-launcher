@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/23prime/claude-launcher/internal/config"
@@ -112,6 +113,7 @@ func (f *FileLoader) Load() (*AccountConfig, error) {
 		}
 	}
 
+	path = filepath.Clean(path)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)

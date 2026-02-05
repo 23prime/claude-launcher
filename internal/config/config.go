@@ -78,6 +78,7 @@ func (f *FileLoader) Load() (*Config, error) {
 		}
 	}
 
+	path = filepath.Clean(path)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
