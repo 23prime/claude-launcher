@@ -6,7 +6,6 @@ linters:
     - govet
     - staticcheck
     - errcheck
-    - unparam
     - unused
     - whitespace
     - gosec
@@ -26,6 +25,8 @@ linters:
       exclude-functions:
         - os.Setenv
         - os.Unsetenv
+    unused:
+      parameters-are-used: false
 
 formatters:
   enable:
