@@ -263,8 +263,8 @@ func showConfigFile() {
 		if os.IsNotExist(err) {
 			fmt.Println("(file does not exist)")
 			fmt.Println("\nCreate it with:")
-			fmt.Printf("  mkdir -p %s\n", filepath.Dir(configPath))
-			fmt.Printf("  echo '{\"allowedDirs\": []}' > %s\n", configPath)
+			fmt.Printf("  mkdir -p \"%s\"\n", filepath.Dir(configPath))
+			fmt.Printf("  echo '{\"allowedDirs\": []}' > \"%s\"\n", configPath)
 		} else {
 			fmt.Printf("Error reading file: %v\n", err)
 		}
