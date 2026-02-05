@@ -3,12 +3,14 @@ version: "2"
 
 linters:
   enable:
+    # Defaults
     - govet
     - staticcheck
     - errcheck
     - unused
-    - whitespace
+    # Additional
     - gosec
+    - whitespace
   exclusions:
     rules:
       - path: _test\.go
