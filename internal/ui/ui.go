@@ -22,25 +22,25 @@ func NewPrinter(writer io.Writer) *Printer {
 }
 
 // Success prints a success message in green
-func (p *Printer) Success(format string, args ...interface{}) {
+func (p *Printer) Success(format string, args ...any) {
 	green := color.New(color.FgGreen)
 	_, _ = green.Fprintf(p.Writer, format, args...) //nolint:errcheck // UI output errors are not critical
 }
 
 // Error prints an error message in red
-func (p *Printer) Error(format string, args ...interface{}) {
+func (p *Printer) Error(format string, args ...any) {
 	red := color.New(color.FgRed)
 	_, _ = red.Fprintf(p.Writer, format, args...) //nolint:errcheck // UI output errors are not critical
 }
 
 // Warning prints a warning message in yellow
-func (p *Printer) Warning(format string, args ...interface{}) {
+func (p *Printer) Warning(format string, args ...any) {
 	yellow := color.New(color.FgYellow, color.Bold)
 	_, _ = yellow.Fprintf(p.Writer, format, args...) //nolint:errcheck // UI output errors are not critical
 }
 
 // Print prints a normal message
-func (p *Printer) Print(format string, args ...interface{}) {
+func (p *Printer) Print(format string, args ...any) {
 	_, _ = fmt.Fprintf(p.Writer, format, args...) //nolint:errcheck // UI output errors are not critical
 }
 

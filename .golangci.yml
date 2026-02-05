@@ -10,6 +10,12 @@ linters:
     - unused
     # Additional
     - gosec
+    - bidichk
+    - errorlint
+    - bodyclose
+    - unconvert
+    - usestdlibvars
+    - modernize
     - whitespace
   exclusions:
     rules:
