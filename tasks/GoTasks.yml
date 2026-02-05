@@ -65,12 +65,12 @@ tasks:
       - golangci-lint run
 
   fix:
-    desc: Format Go code
+    desc: Run golangci-lint auto-fix (formatting and lint fixes)
     cmds:
       - golangci-lint run --fix
 
   check:
-    desc: Check
+    desc: Run vulnerability scan, linter, and unit tests
     cmds:
       - task: vuln
       - task: lint
