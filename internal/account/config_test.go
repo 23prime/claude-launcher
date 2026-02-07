@@ -219,7 +219,7 @@ func TestFileLoader(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			testFile := filepath.Join(tmpDir, "config.json")
-			if err := os.WriteFile(testFile, []byte(tt.jsonContent), 0644); err != nil {
+			if err := os.WriteFile(testFile, []byte(tt.jsonContent), 0o644); err != nil {
 				t.Fatalf("failed to create test file: %v", err)
 			}
 
@@ -260,7 +260,7 @@ func TestChainLoader(t *testing.T) {
 			{"name": "FromFile", "configDir": "/from/file"}
 		]
 	}`
-	if err := os.WriteFile(testFile, []byte(jsonContent), 0644); err != nil {
+	if err := os.WriteFile(testFile, []byte(jsonContent), 0o644); err != nil {
 		t.Fatalf("failed to create test file: %v", err)
 	}
 
