@@ -11,7 +11,7 @@ func TestResolvePath(t *testing.T) {
 
 	// Create a test directory
 	testDir := filepath.Join(tmpDir, "test")
-	if err := os.Mkdir(testDir, 0755); err != nil {
+	if err := os.Mkdir(testDir, 0o755); err != nil {
 		t.Fatalf("failed to create test directory: %v", err)
 	}
 
@@ -184,7 +184,7 @@ func TestDirectoryChecker_IsAllowed(t *testing.T) {
 	workDir := filepath.Join(tmpDir, "work")
 
 	for _, dir := range []string{projectsDir, myProject, workDir} {
-		if err := os.MkdirAll(dir, 0755); err != nil {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
 			t.Fatalf("failed to create test directory %s: %v", dir, err)
 		}
 	}
@@ -262,7 +262,7 @@ func TestDirectoryChecker_IsAllowed_WithSymlink(t *testing.T) {
 
 	// Create real directory
 	realDir := filepath.Join(tmpDir, "real")
-	if err := os.Mkdir(realDir, 0755); err != nil {
+	if err := os.Mkdir(realDir, 0o755); err != nil {
 		t.Fatalf("failed to create real directory: %v", err)
 	}
 
@@ -308,7 +308,6 @@ func TestDirectoryChecker_IsAllowed_WithSymlink(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			checker := NewDirectoryChecker(tt.allowedDirs)
 			result, err := checker.IsAllowed(tt.currentDir)
-
 			if err != nil {
 				t.Errorf("DirectoryChecker.IsAllowed() error = %v", err)
 				return
@@ -324,7 +323,7 @@ func TestDirectoryChecker_IsAllowed_WithSymlink(t *testing.T) {
 func TestDirectoryChecker_IsAllowed_NonExistentAllowedDir(t *testing.T) {
 	tmpDir := t.TempDir()
 	existingDir := filepath.Join(tmpDir, "existing")
-	if err := os.Mkdir(existingDir, 0755); err != nil {
+	if err := os.Mkdir(existingDir, 0o755); err != nil {
 		t.Fatalf("failed to create directory: %v", err)
 	}
 
