@@ -16,6 +16,7 @@ linters:
     - unconvert
     - usestdlibvars
     - modernize
+    - exhaustive
   exclusions:
     rules:
       - path: _test\.go
