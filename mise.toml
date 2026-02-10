@@ -34,18 +34,100 @@ alias = "s"
 
 [tasks.fix]
 description = "Fix all issues"
-depends = ["md-fix"]
+depends = ["go-fix", "md-fix"]
 alias = "f"
 
 [tasks.check]
 description = "Check for all issues"
-depends = ["md-check", "gh-check"]
+depends = ["go-check", "md-check", "gh-check"]
 alias = "c"
 
 [tasks.fix-and-check]
 run = [{ task = "fix" }, { task = "check" }]
 description = "Fix all issues and check for issues"
 alias = "fc"
+
+# Go
+[tasks.go-build]
+description = "Build the application"
+run = """
+VERSION="dev-version"
+COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+go build \
+  -ldflags="-X main.Version=${VERSION} -X main.GitCommit=${COMMIT} -X main.BuildDate=${BUILD_DATE}" \
+  -o bin/claude-launcher \
+  ./cmd/claude-launcher
+"""
+
+[tasks.go-test]
+description = "Run tests"
+run = "go test -v ./..."
+
+[tasks.go-test-cover]
+description = "Run tests with coverage"
+run = "go test -v -cover ./..."
+
+[tasks.go-test-coverage-report]
+description = "Generate coverage report"
+run = [
+  "go test -coverprofile=coverage.out ./...",
+  "go tool cover -html=coverage.out -o coverage.html",
+  "echo 'Coverage report generated: coverage.html'",
+]
+
+[tasks.go-clean]
+description = "Clean build artifacts"
+run = [
+  "go clean",
+  "rm -rf bin/",
+  "rm -f coverage.out coverage.html",
+]
+
+[tasks.go-install]
+description = "Install the binary to GOPATH/bin"
+run = "go install ./cmd/claude-launcher"
+
+[tasks.go-run]
+description = "Build and run the application"
+depends = ["go-build"]
+run = './bin/claude-launcher "$@"'
+
+[tasks.go-mod-tidy]
+description = "Run go mod tidy"
+run = "go mod tidy"
+
+[tasks.go-mod-download]
+description = "Download dependencies"
+run = "go mod download"
+
+[tasks.go-lint]
+description = "Run golangci-lint"
+run = "golangci-lint run"
+
+[tasks.go-fix]
+description = "Run golangci-lint auto-fix (formatting and lint fixes)"
+run = "golangci-lint run --fix"
+
+[tasks.go-check]
+description = "Run vulnerability scan, linter, and unit tests"
+run = [{ task = "go-vuln" }, { task = "go-lint" }, { task = "go-test" }]
+
+[tasks.go-fix-and-check]
+description = "Format and check Go code"
+run = [{ task = "go-fix" }, { task = "go-check" }]
+
+[tasks.go-install-tools]
+description = "Install development tools"
+run = "go install github.com/google/go-licenses/v2@latest"
+
+[tasks.go-check-licenses]
+description = "Check licenses of dependencies"
+run = "go-licenses report ./cmd/claude-launcher --template go-licenses.tpl"
+
+[tasks.go-vuln]
+description = "Check for vulnerabilities in dependencies"
+run = "govulncheck ./..."
 
 # Markdown
 [tasks.md-fix]

@@ -63,8 +63,7 @@ claude-launcher/
 │   ├── session/                   # Session management
 │   ├── launcher/                  # Claude Code execution
 │   └── ui/                        # User interface
-├── tasks/
-│   └── GoTasks.yml                # Taskfile task definitions
+├── mise.toml                      # mise tool/task definitions
 ├── README.md                      # Project README
 └── CLAUDE.md                      # This file
 ```
@@ -87,16 +86,16 @@ Detailed specification analyzing the Bash version. Includes:
 
 ```bash
 # Build
-task go:build
+mise run go-build
 
 # Run tests
-task go:test
+mise run go-test
 
 # Run all checks
-task check
+mise run check
 
 # Format and check
-task fix-and-check
+mise run fix-and-check
 ```
 
 ### Run
@@ -157,7 +156,7 @@ claude-launcher --model opus
 
 ### General Rule
 
-**IMPORTANT**: Always run `task fix-and-check` after any changes and fix all errors before proceeding.
+**IMPORTANT**: Always run `mise run fix-and-check` after any changes and fix all errors before proceeding.
 
 This applies to:
 
@@ -213,13 +212,13 @@ This applies to:
 
 ```bash
 # Run all tests
-task go:test
+mise run go-test
 
 # With coverage
-task go:test-cover
+mise run go-test-cover
 
 # Generate coverage report
-task go:test-coverage-report
+mise run go-test-coverage-report
 ```
 
 ## References

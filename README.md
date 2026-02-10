@@ -68,7 +68,7 @@ go install github.com/23prime/claude-launcher/cmd/claude-launcher@latest
 ```bash
 git clone https://github.com/23prime/claude-launcher
 cd claude-launcher
-task go:build
+mise run go-build
 mv bin/claude-launcher ~/.local/bin/
 ```
 
@@ -217,7 +217,7 @@ Select Claude account:
 
 ## Development
 
-This project uses [Taskfile](https://taskfile.dev) and [mise](https://mise.jdx.dev) for development.
+This project uses [mise](https://mise.jdx.dev) for development.
 
 ### Setup
 
@@ -226,27 +226,27 @@ This project uses [Taskfile](https://taskfile.dev) and [mise](https://mise.jdx.d
 mise install
 
 # Run tests
-task go:test
+mise run go-test
 
 # Build
-task go:build
+mise run go-build
 
 # Run all checks
-task check
+mise run check
 ```
 
 ### Available Tasks
 
 ```bash
 # List all available tasks
-task --list-all
+mise tasks
 
 # Go-specific tasks
-task go:build              # Build the application
-task go:test               # Run tests
-task go:test-cover         # Run tests with coverage
-task go:fmt                # Format code
-task go:vet                # Run go vet
+mise run go-build              # Build the application
+mise run go-test               # Run tests
+mise run go-test-cover         # Run tests with coverage
+mise run go-lint               # Run golangci-lint
+mise run go-vuln               # Check for vulnerabilities
 ```
 
 ## Project Structure
@@ -265,8 +265,7 @@ claude-launcher/
 ├── docs/
 │   ├── specification.md   # Detailed specification
 │   └── implementation-plan.md  # Implementation plan
-└── tasks/
-    └── GoTasks.yml        # Go build tasks
+└── mise.toml             # mise tool/task definitions
 ```
 
 ## Documentation
