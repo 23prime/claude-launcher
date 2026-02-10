@@ -14,7 +14,7 @@ Comprehensive launcher for Claude Code with directory security, multi-account su
 
 ### From GitHub Releases (Recommended)
 
-Download the latest release for your platform from the [releases page](https://github.com/23prime/claude-launcher/releases).
+Download the latest release for your platform from the [releases page](https://github.com/23prime/claude-launcher/releases)
 
 #### Automated Installation (Linux/macOS)
 

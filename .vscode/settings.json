@@ -1,47 +1,23 @@
 {
-  // YAML
-  "yaml.format.enable": true,
-  "yaml.schemas": {
-    "https://json.schemastore.org/taskfile.json": "tasks/*.yml"
-  },
-  "[yaml]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-
-  // JSON
-  "[json]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[jsonc]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit"
-  },
-  "biome.enabled": true,
-
   // Markdown
   "[markdown]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
   },
 
   // Dictionary for spell checker
-  "cSpell.words": ["shellcheck", "Taskfile"],
+  "cSpell.words": ["shellcheck"],
 
   // Go
   "[go]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "golang.Go"
+    "editor.defaultFormatter": "golang.Go",
   },
   "go.lintTool": "golangci-lint",
   "go.lintFlags": ["--path-mode=abs", "--fast-only"],
   "go.formatTool": "custom",
   "go.alternateTools": {
-    "customFormatter": "golangci-lint"
+    "customFormatter": "golangci-lint",
   },
-  "go.formatFlags": ["fmt", "--stdin"]
+  "go.formatFlags": ["fmt", "--stdin"],
 }
