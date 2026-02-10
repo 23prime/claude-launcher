@@ -223,7 +223,7 @@ mise run go-test-coverage-report
 
 ## References
 
-- [Claude Code Official Documentation](https://claude.ai/claude-code)
+- [Claude Code Official Documentation](https://code.claude.com/docs/en/overview)
 - [Go Project Layout](https://github.com/golang-standards/project-layout)
 
 ## License
