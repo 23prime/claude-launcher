@@ -91,7 +91,7 @@ run = "go install ./cmd/claude-launcher"
 [tasks.go-run]
 description = "Build and run the application"
 depends = ["go-build"]
-run = './bin/claude-launcher "$@"'
+run = "./bin/claude-launcher"
 
 [tasks.go-mod-tidy]
 description = "Run go mod tidy"
