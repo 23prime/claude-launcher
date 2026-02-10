@@ -65,7 +65,7 @@ claude-launcher/
 │   └── ui/                        # User interface
 ├── mise.toml                      # mise tool/task definitions
 ├── README.md                      # Project README
-└── CLAUDE.md                      # This file
+└── AGENTS.md                      # This file
 ```
 
 ## Important Documents
