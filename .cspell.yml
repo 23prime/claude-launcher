@@ -22,3 +22,5 @@ ignorePaths:
   - '.git'
   - '.vscode'
   - 'node_modules'
+  - 'go.mod'
+  - 'go.sum'
