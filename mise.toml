@@ -19,6 +19,7 @@ shellcheck = "latest"
 
 # Other tools
 lefthook = "latest"
+cspell = "latest"
 
 
 # ================================================================
@@ -39,7 +40,7 @@ alias = "f"
 
 [tasks.check]
 description = "Check for all issues"
-depends = ["go-check", "md-check", "gh-check"]
+depends = ["go-check", "md-check", "gh-check", "spell-check"]
 alias = "c"
 
 [tasks.fix-and-check]
@@ -78,11 +79,7 @@ run = [
 
 [tasks.go-clean]
 description = "Clean build artifacts"
-run = [
-  "go clean",
-  "rm -rf bin/",
-  "rm -f coverage.out coverage.html",
-]
+run = ["go clean", "rm -rf bin/", "rm -f coverage.out coverage.html"]
 
 [tasks.go-install]
 description = "Install the binary to GOPATH/bin"
@@ -145,3 +142,9 @@ alias = "mc"
 description = "Check GitHub Actions workflows"
 run = "actionlint .github/workflows/*.yml"
 alias = "ghc"
+
+# Spell Check
+[tasks.spell-check]
+description = "Check spelling"
+run = "cspell . --gitignore --verbose"
+alias = "sc"
