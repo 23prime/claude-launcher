@@ -149,13 +149,13 @@ claude-launcher --model opus
 
 ### Command-line Options
 
-| Option          | Short | Description                                       |
-| --------------- | ----- | ------------------------------------------------- |
-| `--help`        | `-h`  | Show help message                                 |
-| `--show-dirs`   | `-l`  | Show configured allowed directories               |
-| `--show-config` | `-c`  | Show configuration file path and contents         |
-| `--version`     | `-v`  | Show version information                          |
-| `--account`     | `-a`  | Account name to use (skips interactive selection) |
+| Option | Short | Description |
+| --- | --- | --- |
+| `--help` | `-h` | Show help message |
+| `--show-dirs` | `-l` | Show configured allowed directories |
+| `--show-config` | `-c` | Show configuration file path and contents |
+| `--version` | `-v` | Show version information |
+| `--account` | `-a` | Account name to use (skips interactive selection) |
 
 ### Example session
 
