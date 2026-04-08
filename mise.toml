@@ -12,10 +12,10 @@ auto_install = false
 # Go
 go = "1.25"
 golangci-lint = "2"
-"go:golang.org/x/vuln/cmd/govulncheck" = "latest"
+"go:golang.org/x/vuln/cmd/govulncheck" = "1"
 
 # YAML
-uv = "latest" # for install yamllint
+uv = "0.11" # for install yamllint
 
 # Markdown
 markdownlint-cli2 = "0.22"
