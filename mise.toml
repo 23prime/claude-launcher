@@ -11,7 +11,7 @@ install_before = "3d"
 # ================================================================
 [tools]
 # Go
-go = "1.25"
+go = "1.26"
 golangci-lint = "2"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1"
 
