@@ -18,6 +18,9 @@ golangci-lint = "2"
 # YAML
 uv = "0.11" # for install yamllint
 
+# Node.js
+node = "24"
+
 # Markdown
 markdownlint-cli2 = "0.22"
 
