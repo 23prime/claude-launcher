@@ -11,6 +11,7 @@ import (
 // Config represents the configuration for claude-launcher
 type Config struct {
 	AllowedDirs []string
+	OtelEnv     map[string]string
 }
 
 // Loader is an interface for loading configuration
@@ -45,7 +46,10 @@ func (e *EnvLoader) Load() (*Config, error) {
 		return nil, fmt.Errorf("no valid directories in CLAUDE_SAFE_DIRS")
 	}
 
-	return &Config{AllowedDirs: expandedDirs}, nil
+	return &Config{
+		AllowedDirs: expandedDirs,
+		OtelEnv:     make(map[string]string),
+	}, nil
 }
 
 // DefaultConfigPath returns the default configuration file path
@@ -64,7 +68,8 @@ type FileLoader struct {
 
 // configJSON represents the structure of the config file
 type configJSON struct {
-	AllowedDirs []string `json:"allowedDirs"`
+	AllowedDirs []string          `json:"allowedDirs"`
+	OtelEnv     map[string]string `json:"otelEnv,omitempty"`
 }
 
 // Load implements the Loader interface for FileLoader
@@ -102,7 +107,10 @@ func (f *FileLoader) Load() (*Config, error) {
 		expandedDirs = append(expandedDirs, expanded)
 	}
 
-	return &Config{AllowedDirs: expandedDirs}, nil
+	return &Config{
+		AllowedDirs: expandedDirs,
+		OtelEnv:     cfg.OtelEnv,
+	}, nil
 }
 
 // ChainLoader tries multiple loaders in order
