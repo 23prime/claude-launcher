@@ -46,10 +46,7 @@ func (e *EnvLoader) Load() (*Config, error) {
 		return nil, fmt.Errorf("no valid directories in CLAUDE_SAFE_DIRS")
 	}
 
-	return &Config{
-		AllowedDirs: expandedDirs,
-		OtelEnv:     make(map[string]string),
-	}, nil
+	return &Config{AllowedDirs: expandedDirs}, nil
 }
 
 // DefaultConfigPath returns the default configuration file path
