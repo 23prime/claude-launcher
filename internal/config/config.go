@@ -135,18 +135,26 @@ func (c *ChainLoader) Load() (*Config, error) {
 	return nil, fmt.Errorf("all loaders failed: %v", errors)
 }
 
-// LoadConfig loads configuration with priority order:
-// 1. CLAUDE_SAFE_DIRS environment variable
-// 2. ~/.config/claude-launcher/config.json
+// LoadConfig loads configuration by merging both sources:
+//   - AllowedDirs: CLAUDE_SAFE_DIRS takes priority over config.json
+//   - OtelEnv: always read from config.json (not available via env var)
 func LoadConfig() (*Config, error) {
-	loader := &ChainLoader{
-		Loaders: []Loader{
-			&EnvLoader{},
-			&FileLoader{},
-		},
-	}
+	fileCfg, fileErr := (&FileLoader{}).Load()
+	envCfg, envErr := (&EnvLoader{}).Load()
 
-	return loader.Load()
+	switch {
+	case envErr == nil && fileErr == nil:
+		return &Config{
+			AllowedDirs: envCfg.AllowedDirs,
+			OtelEnv:     fileCfg.OtelEnv,
+		}, nil
+	case envErr == nil:
+		return envCfg, nil
+	case fileErr == nil:
+		return fileCfg, nil
+	default:
+		return nil, fmt.Errorf("all loaders failed: %w; %w", envErr, fileErr)
+	}
 }
 
 // ExpandPath expands ~ to home directory
