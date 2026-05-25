@@ -14,6 +14,7 @@ import (
 type Account struct {
 	Name      string
 	ConfigDir string
+	OtelEnv   map[string]string
 }
 
 // AccountConfig holds the list of configured accounts
@@ -93,8 +94,9 @@ type FileLoader struct {
 
 // accountJSON represents the account structure in JSON
 type accountJSON struct {
-	Name      string `json:"name"`
-	ConfigDir string `json:"configDir"`
+	Name      string            `json:"name"`
+	ConfigDir string            `json:"configDir"`
+	OtelEnv   map[string]string `json:"otelEnv,omitempty"`
 }
 
 // configJSON represents the structure of the config file for accounts
@@ -142,6 +144,7 @@ func (f *FileLoader) Load() (*AccountConfig, error) {
 		accounts = append(accounts, Account{
 			Name:      acc.Name,
 			ConfigDir: expandedDir,
+			OtelEnv:   acc.OtelEnv,
 		})
 	}
 
