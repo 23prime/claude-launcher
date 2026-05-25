@@ -19,7 +19,8 @@ type Loader interface {
 	Load() (*Config, error)
 }
 
-// EnvLoader loads configuration from environment variables
+// EnvLoader loads configuration from environment variables.
+// Note: OtelEnv is not supported via CLAUDE_SAFE_DIRS; use config.json instead.
 type EnvLoader struct{}
 
 // Load implements the Loader interface for EnvLoader

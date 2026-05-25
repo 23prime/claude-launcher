@@ -50,7 +50,8 @@ func (e *EnvLoader) Load() (*AccountConfig, error) {
 	return &AccountConfig{Accounts: accounts}, nil
 }
 
-// parseAccountsString parses a comma-separated string of "Name:ConfigDir" pairs
+// parseAccountsString parses a comma-separated string of "Name:ConfigDir" pairs.
+// Note: OtelEnv is not supported via CLAUDE_ACCOUNTS; use config.json instead.
 func parseAccountsString(s string) ([]Account, error) {
 	entries := strings.Split(s, ",")
 	accounts := make([]Account, 0, len(entries))
