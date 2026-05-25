@@ -24,6 +24,8 @@ realpath
 softprops
 staticcheck
 trimpath
+Errorf
+Fatalf
 omitempty
 unconvert
 usestdlibvars
