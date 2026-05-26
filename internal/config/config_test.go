@@ -303,3 +303,67 @@ func TestChainLoaderAllFail(t *testing.T) {
 		t.Error("ChainLoader.Load() should return error when all loaders fail")
 	}
 }
+
+func TestFileLoaderOtelEnv(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "config.json")
+
+	tests := []struct {
+		name            string
+		jsonContent     string
+		wantErr         bool
+		expectedOtelEnv map[string]string
+	}{
+		{
+			name: "with otelEnv",
+			jsonContent: `{
+				"allowedDirs": ["/home/user/projects"],
+				"otelEnv": {
+					"CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+					"OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
+				}
+			}`,
+			wantErr: false,
+			expectedOtelEnv: map[string]string{
+				"CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+				"OTEL_EXPORTER_OTLP_ENDPOINT":  "http://localhost:4317",
+			},
+		},
+		{
+			name: "without otelEnv",
+			jsonContent: `{
+				"allowedDirs": ["/home/user/projects"]
+			}`,
+			wantErr:         false,
+			expectedOtelEnv: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := os.WriteFile(testFile, []byte(tt.jsonContent), 0o644); err != nil {
+				t.Fatalf("failed to create test file: %v", err)
+			}
+
+			loader := &FileLoader{Path: testFile}
+			cfg, err := loader.Load()
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FileLoader.Load() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr {
+				if len(cfg.OtelEnv) != len(tt.expectedOtelEnv) {
+					t.Errorf("OtelEnv length = %d, expected %d", len(cfg.OtelEnv), len(tt.expectedOtelEnv))
+					return
+				}
+				for k, v := range tt.expectedOtelEnv {
+					if cfg.OtelEnv[k] != v {
+						t.Errorf("OtelEnv[%q] = %q, expected %q", k, cfg.OtelEnv[k], v)
+					}
+				}
+			}
+		})
+	}
+}

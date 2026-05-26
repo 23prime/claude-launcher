@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // Launcher handles launching Claude Code
@@ -22,7 +23,8 @@ func NewLauncher() *Launcher {
 type LaunchOptions struct {
 	Continue  bool
 	Args      []string
-	ConfigDir string // Optional: Sets CLAUDE_CONFIG_DIR environment variable
+	ConfigDir string            // Optional: Sets CLAUDE_CONFIG_DIR environment variable
+	OtelEnv   map[string]string // Optional: OpenTelemetry environment variables
 }
 
 // Launch executes Claude Code with the specified options
@@ -40,9 +42,8 @@ func (l *Launcher) Launch(opts LaunchOptions) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = os.Environ()
+	cmd.Env = buildOtelEnv(os.Environ(), opts.OtelEnv)
 
-	// Set CLAUDE_CONFIG_DIR if specified
 	if opts.ConfigDir != "" {
 		cmd.Env = append(cmd.Env, "CLAUDE_CONFIG_DIR="+opts.ConfigDir)
 	}
@@ -52,4 +53,29 @@ func (l *Launcher) Launch(opts LaunchOptions) error {
 	}
 
 	return nil
+}
+
+// buildOtelEnv merges otelEnv into base, skipping keys already present in base.
+// Shell env vars (base) take highest priority.
+func buildOtelEnv(base []string, otelEnv map[string]string) []string {
+	if len(otelEnv) == 0 {
+		return base
+	}
+
+	existing := make(map[string]bool, len(base))
+	for _, e := range base {
+		key := strings.SplitN(e, "=", 2)[0]
+		existing[key] = true
+	}
+
+	result := make([]string, len(base), len(base)+len(otelEnv))
+	copy(result, base)
+
+	for k, v := range otelEnv {
+		if !existing[k] {
+			result = append(result, k+"="+v)
+		}
+	}
+
+	return result
 }

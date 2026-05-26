@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 
@@ -153,12 +154,21 @@ func run() int {
 		printer.ShowStartingNewSession()
 	}
 
+	// Merge OTel env: global config first, account overrides second.
+	// Shell env vars take priority at injection time (handled in launcher).
+	otelEnv := make(map[string]string)
+	maps.Copy(otelEnv, cfg.OtelEnv)
+	if selectedAccount != nil {
+		maps.Copy(otelEnv, selectedAccount.OtelEnv)
+	}
+
 	// Launch Claude
 	l := launcher.NewLauncher()
 	launchOpts := launcher.LaunchOptions{
 		Continue:  shouldContinue,
 		Args:      flag.Args(),
 		ConfigDir: configDir,
+		OtelEnv:   otelEnv,
 	}
 
 	if err := l.Launch(launchOpts); err != nil {

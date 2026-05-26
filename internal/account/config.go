@@ -14,6 +14,7 @@ import (
 type Account struct {
 	Name      string
 	ConfigDir string
+	OtelEnv   map[string]string
 }
 
 // AccountConfig holds the list of configured accounts
@@ -49,7 +50,8 @@ func (e *EnvLoader) Load() (*AccountConfig, error) {
 	return &AccountConfig{Accounts: accounts}, nil
 }
 
-// parseAccountsString parses a comma-separated string of "Name:ConfigDir" pairs
+// parseAccountsString parses a comma-separated string of "Name:ConfigDir" pairs.
+// Note: OtelEnv is not supported via CLAUDE_ACCOUNTS; use config.json instead.
 func parseAccountsString(s string) ([]Account, error) {
 	entries := strings.Split(s, ",")
 	accounts := make([]Account, 0, len(entries))
@@ -93,8 +95,9 @@ type FileLoader struct {
 
 // accountJSON represents the account structure in JSON
 type accountJSON struct {
-	Name      string `json:"name"`
-	ConfigDir string `json:"configDir"`
+	Name      string            `json:"name"`
+	ConfigDir string            `json:"configDir"`
+	OtelEnv   map[string]string `json:"otelEnv,omitempty"`
 }
 
 // configJSON represents the structure of the config file for accounts
@@ -142,6 +145,7 @@ func (f *FileLoader) Load() (*AccountConfig, error) {
 		accounts = append(accounts, Account{
 			Name:      acc.Name,
 			ConfigDir: expandedDir,
+			OtelEnv:   acc.OtelEnv,
 		})
 	}
 

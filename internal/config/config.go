@@ -11,6 +11,7 @@ import (
 // Config represents the configuration for claude-launcher
 type Config struct {
 	AllowedDirs []string
+	OtelEnv     map[string]string
 }
 
 // Loader is an interface for loading configuration
@@ -18,7 +19,8 @@ type Loader interface {
 	Load() (*Config, error)
 }
 
-// EnvLoader loads configuration from environment variables
+// EnvLoader loads configuration from environment variables.
+// Note: OtelEnv is not supported via CLAUDE_SAFE_DIRS; use config.json instead.
 type EnvLoader struct{}
 
 // Load implements the Loader interface for EnvLoader
@@ -64,7 +66,8 @@ type FileLoader struct {
 
 // configJSON represents the structure of the config file
 type configJSON struct {
-	AllowedDirs []string `json:"allowedDirs"`
+	AllowedDirs []string          `json:"allowedDirs"`
+	OtelEnv     map[string]string `json:"otelEnv,omitempty"`
 }
 
 // Load implements the Loader interface for FileLoader
@@ -102,7 +105,10 @@ func (f *FileLoader) Load() (*Config, error) {
 		expandedDirs = append(expandedDirs, expanded)
 	}
 
-	return &Config{AllowedDirs: expandedDirs}, nil
+	return &Config{
+		AllowedDirs: expandedDirs,
+		OtelEnv:     cfg.OtelEnv,
+	}, nil
 }
 
 // ChainLoader tries multiple loaders in order
@@ -129,18 +135,26 @@ func (c *ChainLoader) Load() (*Config, error) {
 	return nil, fmt.Errorf("all loaders failed: %v", errors)
 }
 
-// LoadConfig loads configuration with priority order:
-// 1. CLAUDE_SAFE_DIRS environment variable
-// 2. ~/.config/claude-launcher/config.json
+// LoadConfig loads configuration by merging both sources:
+//   - AllowedDirs: CLAUDE_SAFE_DIRS takes priority over config.json
+//   - OtelEnv: always read from config.json (not available via env var)
 func LoadConfig() (*Config, error) {
-	loader := &ChainLoader{
-		Loaders: []Loader{
-			&EnvLoader{},
-			&FileLoader{},
-		},
-	}
+	fileCfg, fileErr := (&FileLoader{}).Load()
+	envCfg, envErr := (&EnvLoader{}).Load()
 
-	return loader.Load()
+	switch {
+	case envErr == nil && fileErr == nil:
+		return &Config{
+			AllowedDirs: envCfg.AllowedDirs,
+			OtelEnv:     fileCfg.OtelEnv,
+		}, nil
+	case envErr == nil:
+		return envCfg, nil
+	case fileErr == nil:
+		return fileCfg, nil
+	default:
+		return nil, fmt.Errorf("all loaders failed: %w; %w", envErr, fileErr)
+	}
 }
 
 // ExpandPath expands ~ to home directory

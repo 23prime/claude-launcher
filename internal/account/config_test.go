@@ -375,3 +375,75 @@ func TestAccountConfigExpansion(t *testing.T) {
 		t.Errorf("ConfigDir = %v, expected %v", cfg.Accounts[0].ConfigDir, expectedDir)
 	}
 }
+
+func TestFileLoaderAccountOtelEnv(t *testing.T) {
+	tmpDir := t.TempDir()
+	testFile := filepath.Join(tmpDir, "config.json")
+
+	tests := []struct {
+		name            string
+		jsonContent     string
+		wantErr         bool
+		expectedOtelEnv map[string]string
+	}{
+		{
+			name: "account with otelEnv",
+			jsonContent: `{
+				"accounts": [
+					{
+						"name": "Work",
+						"configDir": "/home/user/.claude-work",
+						"otelEnv": {
+							"OTEL_SERVICE_NAME": "claude-work",
+							"OTEL_RESOURCE_ATTRIBUTES": "team.id=platform"
+						}
+					}
+				]
+			}`,
+			wantErr: false,
+			expectedOtelEnv: map[string]string{
+				"OTEL_SERVICE_NAME":        "claude-work",
+				"OTEL_RESOURCE_ATTRIBUTES": "team.id=platform",
+			},
+		},
+		{
+			name: "account without otelEnv",
+			jsonContent: `{
+				"accounts": [
+					{"name": "Personal", "configDir": "/home/user/.claude-personal"}
+				]
+			}`,
+			wantErr:         false,
+			expectedOtelEnv: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := os.WriteFile(testFile, []byte(tt.jsonContent), 0o644); err != nil {
+				t.Fatalf("failed to create test file: %v", err)
+			}
+
+			loader := &FileLoader{Path: testFile}
+			cfg, err := loader.Load()
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FileLoader.Load() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr {
+				acc := cfg.Accounts[0]
+				if len(acc.OtelEnv) != len(tt.expectedOtelEnv) {
+					t.Errorf("OtelEnv length = %d, expected %d", len(acc.OtelEnv), len(tt.expectedOtelEnv))
+					return
+				}
+				for k, v := range tt.expectedOtelEnv {
+					if acc.OtelEnv[k] != v {
+						t.Errorf("OtelEnv[%q] = %q, expected %q", k, acc.OtelEnv[k], v)
+					}
+				}
+			}
+		})
+	}
+}
