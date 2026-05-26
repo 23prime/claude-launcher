@@ -185,6 +185,7 @@ OPTIONS:
     -c, --show-config  Show configuration file path and contents
     -v, --version      Show version information
     -a, --account      Account name to use (skips interactive selection)
+    --no-otel          Disable OpenTelemetry environment variable injection
 
 DESCRIPTION:
     Combines directory security, account selection, and session management
