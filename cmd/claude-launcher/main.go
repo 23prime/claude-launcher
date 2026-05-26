@@ -48,6 +48,8 @@ func run() int {
 	accountName := flag.String("account", "", "Account name to use (must exist in config)")
 	flag.StringVar(accountName, "a", "", "Account name to use (shorthand)")
 
+	noOtel := flag.Bool("no-otel", false, "Disable OpenTelemetry environment variable injection")
+
 	flag.Parse()
 
 	printer := ui.NewPrinter(os.Stderr)
@@ -154,21 +156,13 @@ func run() int {
 		printer.ShowStartingNewSession()
 	}
 
-	// Merge OTel env: global config first, account overrides second.
-	// Shell env vars take priority at injection time (handled in launcher).
-	otelEnv := make(map[string]string)
-	maps.Copy(otelEnv, cfg.OtelEnv)
-	if selectedAccount != nil {
-		maps.Copy(otelEnv, selectedAccount.OtelEnv)
-	}
-
 	// Launch Claude
 	l := launcher.NewLauncher()
 	launchOpts := launcher.LaunchOptions{
 		Continue:  shouldContinue,
 		Args:      flag.Args(),
 		ConfigDir: configDir,
-		OtelEnv:   otelEnv,
+		OtelEnv:   buildLaunchOtelEnv(cfg, selectedAccount, *noOtel),
 	}
 
 	if err := l.Launch(launchOpts); err != nil {
@@ -191,6 +185,7 @@ OPTIONS:
     -c, --show-config  Show configuration file path and contents
     -v, --version      Show version information
     -a, --account      Account name to use (skips interactive selection)
+    --no-otel          Disable OpenTelemetry environment variable injection
 
 DESCRIPTION:
     Combines directory security, account selection, and session management
@@ -283,4 +278,19 @@ func showConfigFile() {
 
 	fmt.Println("Contents:")
 	fmt.Println(string(data))
+}
+
+func buildLaunchOtelEnv(cfg *config.Config, selectedAccount *account.Account, noOtel bool) map[string]string {
+	if noOtel {
+		return nil
+	}
+
+	otelEnv := make(map[string]string)
+	maps.Copy(otelEnv, cfg.OtelEnv)
+
+	if selectedAccount != nil {
+		maps.Copy(otelEnv, selectedAccount.OtelEnv)
+	}
+
+	return otelEnv
 }
