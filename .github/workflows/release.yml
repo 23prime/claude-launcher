@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions: {}
 
 jobs:
@@ -65,8 +69,8 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          output_name="claude-launcher-${{ matrix.goos }}-${{ matrix.goarch }}"
-          if [ "${{ matrix.goos }}" = "windows" ]; then
+          output_name="claude-launcher-${GOOS}-${GOARCH}"
+          if [ "${GOOS}" = "windows" ]; then
             output_name="${output_name}.exe"
           fi
 
@@ -82,9 +86,12 @@ jobs:
             ./cmd/claude-launcher
 
       - name: Create archive
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
-          output_name="claude-launcher-${{ matrix.goos }}-${{ matrix.goarch }}"
-          if [ "${{ matrix.goos }}" = "windows" ]; then
+          output_name="claude-launcher-${GOOS}-${GOARCH}"
+          if [ "${GOOS}" = "windows" ]; then
             zip "${output_name}.zip" "${output_name}.exe"
           else
             tar -czf "${output_name}.tar.gz" "${output_name}"
@@ -103,10 +110,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: write
-      id-token: write
-      attestations: write
+      actions: read # read workflow run data for attestation
+      contents: write # create the GitHub release
+      id-token: write # OIDC token for attestation
+      attestations: write # attest build provenance
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
