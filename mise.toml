@@ -22,7 +22,7 @@ uv = "0.11.32" # for install yamllint
 node = "26"
 
 # Markdown
-markdownlint-cli2 = "0.23.1"
+markdownlint-cli2 = "0.23.2"
 
 # GitHub Actions
 actionlint = "1"
@@ -31,7 +31,7 @@ zizmor = "1.28.0"
 
 # Git
 lefthook = "2.1.10"
-betterleaks = "v1.7.0"
+betterleaks = "v1.7.1"
 
 # Spell Check
 cspell = "10"
