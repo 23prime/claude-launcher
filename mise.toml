@@ -16,7 +16,7 @@ golangci-lint = "2"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1"
 
 # YAML
-uv = "0.12.1" # for install yamllint
+uv = "0.12.2" # for install yamllint
 
 # Node.js
 node = "26"
