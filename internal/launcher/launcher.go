@@ -64,7 +64,7 @@ func buildOtelEnv(base []string, otelEnv map[string]string) []string {
 
 	existing := make(map[string]bool, len(base))
 	for _, e := range base {
-		key := strings.SplitN(e, "=", 2)[0]
+		key, _, _ := strings.Cut(e, "=")
 		existing[key] = true
 	}
 
