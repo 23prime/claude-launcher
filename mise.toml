@@ -12,7 +12,7 @@ minimum_release_age = "3d"
 [tools]
 # Go
 go = "1.27.0"
-golangci-lint = "2.13.1"
+golangci-lint = "2.13.2"
 "go:golang.org/x/vuln/cmd/govulncheck" = "1"
 
 # YAML
