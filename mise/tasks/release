@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#MISE description="Create release tag (usage: mise run release -- <major|minor|patch> [-y|--yes])"
+set -euo pipefail
+
+# Check required commands
+for cmd in git gh; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    printf "[ERROR] Required command '%s' not found. Please install it.\n" "$cmd" >&2
+    exit 1
+  fi
+done
+
+# Parse arguments
+level=""
+yes=false
+for arg in "$@"; do
+  case "$arg" in
+    -y|--yes) yes=true ;;
+    *) level="$arg" ;;
+  esac
+done
+
+if [ -z "$level" ]; then
+  printf "Usage: mise run release -- <major|minor|patch> [-y|--yes]\n" >&2
+  exit 1
+fi
+
+case "$level" in
+  major|minor|patch) ;;
+  *)
+    printf "[ERROR] Invalid bump level '%s'. Must be one of: major, minor, patch\n" "$level" >&2
+    exit 1
+    ;;
+esac
+
+# Get current version from the latest tag (the version is injected via ldflags, so there is no version file)
+current_version=$(git describe --tags --abbrev=0 --match 'v[0-9]*')
+current_version="${current_version#v}"
+
+# Compute next version from bump level
+IFS='.' read -r major minor patch <<< "$current_version"
+case "$level" in
+  major) major=$((major + 1)); minor=0; patch=0 ;;
+  minor) minor=$((minor + 1)); patch=0 ;;
+  patch) patch=$((patch + 1)) ;;
+esac
+next_version="${major}.${minor}.${patch}"
+tag="v${next_version}"
+
+# Check if tag already exists
+if [ -n "$(git tag -l "$tag")" ]; then
+  printf "[ERROR] Tag '%s' already exists\n" "$tag" >&2
+  exit 1
+fi
+
+# Check for a clean working tree
+if ! git diff --quiet HEAD; then
+  printf "[ERROR] Working tree has uncommitted changes. Please commit or stash them first.\n" >&2
+  exit 1
+fi
+
+# Confirm
+if [ "$yes" = true ]; then
+  printf "Bump version from v%s to %s\n" "$current_version" "$tag"
+else
+  printf "Bump version from v%s to %s? [y/N] " "$current_version" "$tag"
+  read -r answer
+  if [ "$answer" != "y" ] && [ "$answer" != "Y" ]; then
+    printf "Aborted.\n"
+    exit 0
+  fi
+fi
+
+# Create annotated tag
+printf "Creating release tag: %s\n" "$tag"
+git tag -a "$tag" -m "Release ${tag}"
+
+printf "Pushing to remote...\n"
+git push origin "$tag"
+
+REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+printf "Release %s created and pushed successfully\n" "$tag"
+printf "See GitHub Actions for details: https://github.com/%s/actions\n" "$REPO"

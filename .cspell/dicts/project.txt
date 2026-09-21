@@ -29,3 +29,6 @@ Fatalf
 omitempty
 unconvert
 usestdlibvars
+pipefail
+esac
+oneline
