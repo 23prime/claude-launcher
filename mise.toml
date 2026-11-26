@@ -22,7 +22,7 @@ uv = "0.13.7" # for install yamllint
 node = "26"
 
 # Markdown
-markdownlint-cli2 = "0.24.1"
+markdownlint-cli2 = "0.24.2"
 
 # GitHub Actions
 jactionlint = "2"
