@@ -321,9 +321,9 @@ url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellche
 url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056944"
 
 [[tools.uv]]
-version = "0.13.7"
+version = "0.13.9"
 backend = "asdf:uv"
-specifiers = ["0.13.7"]
+specifiers = ["0.13.9"]
 
 [[tools.zizmor]]
 version = "1.32.0"
